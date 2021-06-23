@@ -7,9 +7,8 @@
  * @FilePath: \group\template\template-admin\src\common\config.js
  */
  const config = {
-  host:'http://collect.luofanrain.club',
-  // host:'http://127.0.0.1:3000',
-  havePermisiison:false,
+  host:'http://127.0.0.1:8000',
+  havePermisiison:true,
   axiosType:{
     zip:'application/zip',
     xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
@@ -20,7 +19,9 @@
     delete:'删除成功',
     import:'导入成功'
   },
-  types:{},
+  types:{
+    permissions:['菜单','功能']
+  },
   tips:{
     errCode:{
       400:'参数错误',
@@ -44,25 +45,33 @@
     //     },
     //   ]
     // },
-
     {
-      key:'users',  
-      type:'row',
-      label:'用户列表',
-      code:'USERS'
+      label:'用户管理',
+      type:'group',
+      list:[
+        {
+          key:'accounts',
+          type:'row',
+          label:'账号列表',
+          level:[1],
+          code:'ACCOUNTLIST'
+        },
+        {
+          key:'permissions',
+          type:'row',
+          label:'权限列表',
+          level:[1],
+          code:'PERMISSIONLIST'
+        },
+      ]
     },
     {
-      key:'collect',  
+      key:'messages',
       type:'row',
-      label:'收藏列表',
-      code:'COLLECT'
+      label:'留言列表',
+      level:[1],
+      code:'MESSAGES'
     },
-    {
-      key:'collectType',  
-      type:'row',
-      label:'收藏类型',
-      code:'COLLECTTYPE'
-    }
 
   ],
   table:{
@@ -80,30 +89,28 @@
       detail:'详情',
       preview:'预览'
     },
-    users:{
-      username: '用户名',
-      password:'用户密码',
-      token:'用户token',
+    accounts:{
+      name: '姓名',
+      account:'账号',
       login_time:'登录时间',
       create_time:'创建时间',
-      update_time:'更新时间'
+      update_time:'更新时间',
+      permission_names:'权限'
     },
-    collect:{
-      name: '收藏名',
-      first:'总分类',
-      second:'分类',
-      icon:'图标',
-      url:'链接',
+    permissions:{
+      name:'权限',
+      code:'权限CODE',
+      type:'权限类型',
       create_time:'创建时间',
       update_time:'更新时间'
+
     },
-    collectType:{
-      parent_type:'父类',
-      name: '类型名',
-      level:'等级',
-      create_time:'创建时间',
-      update_time:'更新时间'
-    },
+    messages:{
+      from_name:'留言人',
+      content:'留言内容',
+      create_time:'创建时间'
+
+    }
   }
 }
 export default config;

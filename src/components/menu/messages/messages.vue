@@ -1,20 +1,18 @@
 <template>
   <div class='page_menu_list'>
-    <div class='func_tab'>
-      <el-input v-model="search.name" placeholder="请输入关键字"></el-input>
-      <el-button type="primary" @click='loadData'>{{config.label.select}}</el-button>
-      <el-button type="primary" @click='create'>{{config.label.create}}</el-button>
-      <el-button type="primary" @click='uploadFile'>{{config.label.import}}</el-button>
-      <input type='file' v-if='resetFile' ref='selectFile' v-show='false' @change='changeFile'>
-    </div>
-    <div class='tableData' ref='list' :style='`height:${height-100}px`'>
+    <!-- <div class='func_tab'>
+      <el-input class='func_tab_input' v-model='search.name' placeholder='请输入姓名'></el-input>
+      <el-button type='primary' @click='loadData'>{{config.label.select}}</el-button>
+      <input type='file' v-if='resetFile' v-show='false' @change='changeFile'>
+    </div> -->
+    <div class='tableData' ref='list' :style='`height:${height-40}px`'>
       <el-table
         :data="list"
         v-loading="loading"
         fixed=false
-        :height='height-100'
+        :height='height-40'
         @cell-click='select'
-        style="width: 100%;height:100%;overflow:auto;"  class='showData'>    
+        style="width: 100%;height:100%;overflow:auto;"  class='showData'> 
         <el-table-column
           type="index"
           :index="(search.page-1)*search.pagesize+1"
@@ -29,13 +27,13 @@
         </el-table-column> 
         <el-table-column
           label="操作"
-          align="right"
-          width="200"
+          align="center"
+          fixed="right"
           >
           <template slot-scope="scope">
               <el-button-group>
-                <el-button type="primary"   @click='update(list[scope.$index])'>{{config.label.modify}}</el-button>                
-                <el-button type="danger"  @click='del(list[scope.$index])'>{{config.label.delete}}</el-button>
+                <!-- <el-button type="primary"   @click='update(list[scope.$index])'>{{config.label.modify}}</el-button>                 -->
+                <el-button type="primary"  @click='showInfo(list[scope.$index])'>回复/详情</el-button>
 
               </el-button-group>
           </template>
@@ -63,24 +61,25 @@
   import urls from '@/common/urls'
   import tool from '@/common/tool'
   import tips from '@/common/tips'
-  import uploads from '@/common/uploads'
-  import detail from '@/components/menu/collectType/detail'
-  import middle from '@/components/menu/collectType/middle'
+  import detail from '@/components/menu/messages/detail'
+  import middle from '@/components/menu/messages/middle'
   import BSscroll from 'better-scroll'
   import $ from 'jquery'
   export default {
-    name:'collectType',
+    name:'messages',
     data() {
       return {
         config:{
           label:config.table.label,
           imgfields:[],
           filedsWidth:{
-            
+            create_time:200
           }
         },
         search:{
           name:'',
+          phone:'',
+          reply:'',
           page:config.table.page,
           pagesize:config.table.pagesize,
         },
@@ -98,7 +97,7 @@
       }
     },
     created(){
-      this.fields = config.table.collectType;
+      this.fields = config.table.messages;
       this.loadData();
       // 根据当前界面宽高显示不同的字段
     },
@@ -111,8 +110,9 @@
     },
     methods:{
       loadData(){
-        let url = tool.getURL(urls.collectType.list,this.search)
+        let url = tool.getURL(urls.messages.list,this.search)
          axios.get(url,(res)=>{
+           console.log(res);
           this.list = res.data;
           this.total_page = res.count || 1;
           this.$nextTick(()=>{
@@ -131,10 +131,15 @@
           }
         })
       },
-
       formatData(key,data){
         let text = '';
         switch(key){
+          case 'send_status':
+            text = this.config.audit_status[data[key]]
+            break;
+          case 'istest':
+            text = this.config.status[data[key]]
+            break;
         }
         return text ? text : tool.fotmatData(key,data[key])
       },
@@ -146,22 +151,21 @@
       select(data,tableData,cell){
       },
       uploadFile(){
-        this.$refs.selectFile.click()
+        this.$refs.file.click()
       },
       async changeFile(e){
         let file = e.target.files[0];
         this.resetFile = false;
-        let data = await uploads.uploadFile(file,'xlsx|xls','file',urls.collectType.import);
-        console.log(data)
-        if(data && !data.errocde)  tips.success(this,{text:data.msg || config.showTips.import})
+        let data = await uploads.uploadFile(file,'xlsx|xls','file',urls.messages.import);
+        tips.success({text:config.showTips.import})
         this.resetFile = true;
       },
       exportFile(){
-        axios.download(urls.collectType.export,this.getName(),'xlsx')
+        axios.download(urls.messages.export,this.getName(),'xlsx')
       },
       getName(){
         let date = new Date();
-        return  `用户列表`
+        return  `咨询信息`
       },
       closeInfo(status){
         this.item = {};
@@ -201,16 +205,15 @@
       requestDel(item){
         if(this.deleteLoading) return;
         this.deleteLoading = true;
-        let url = `${urls.collectType.delete}?id=${item.id}`;
+        let url = `${urls.messages.delete}?id=${item.id}`;
         axios.delete(url,(res)=>{
-          console.log(res)
           setTimeout(()=>{this.deleteLoading = false},1000)
           if(res.errcode) return;
           if(this.total_page%this.search.pagesize == 1 && this.search.page > 1){
             this.search.page -=1;
           }
           this.loadData();
-          tips.success(this,{text:config.showTips.delete})
+          tips.success({text:config.showTips.delete})
         })
       },
       

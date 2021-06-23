@@ -19,9 +19,9 @@
 <script>
 import headerlabel from '@/components/main/headerlabel'
 import asidelabel from '@/components/main/asidelabel'
-import users from '@/components/menu/users/users'
-import collectType from '@/components/menu/collectType/collectType'
-import collect from '@/components/menu/collect/collect'
+import accounts from '@/components/menu/accounts/accounts'
+import permissions from '@/components/menu/permissions/permissions'
+import messages from '@/components/menu/messages/messages'
 export default  {
     name:'index',
     data(){
@@ -38,9 +38,9 @@ export default  {
     components:{
         headerlabel,
         asidelabel,
-        users,
-        collectType,
-        collect,
+        accounts,
+        permissions,
+        messages,
     }
 }
 

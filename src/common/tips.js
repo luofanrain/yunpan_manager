@@ -6,6 +6,7 @@ const getDom = (dom) => {
   return dom || RootDom;
 }
 const setTips = (dom,data,type,time=3000) => {
+  console.log(data)
   let text =  data.text;
   let curDom = getDom(dom)
   curDom.$message({

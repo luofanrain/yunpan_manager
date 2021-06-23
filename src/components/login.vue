@@ -2,13 +2,15 @@
   <el-container class='container login-cont'>
     <el-form ref="form" class='content' autocomplete='off' @keyup.enter.native='doLogin'>
       <div class='login-main-title'>
-        <img
+        <!-- <img
           :src="require('@/assets/images/logo.png')"
           class='logo'
-          />
+          /> -->
+          <span>云盘系统</span>
+          <span>后台管理平台</span>
       </div>
       <div  class='input'>
-        <el-input placeholder="请输入账号" v-model="data.username" class='inputContent'  required="required" autocapitalize="off">
+        <el-input placeholder="请输入账号" v-model="data.account" class='inputContent'  required="required" autocapitalize="off">
           <template slot="prepend" class='inputContent'>账号:</template>
         </el-input>
       </div>
@@ -34,7 +36,7 @@ export default {
   data () {
     return {
       data:{
-        username: '',
+        account: '',
         password: '',
       },
       loading:false
@@ -45,7 +47,7 @@ export default {
   },
   methods:{
     verityData(){
-      if(this.data.username === ''){
+      if(this.data.account === ''){
         tips.error(this,{text:'请输入用户名'})
         return true;
       }

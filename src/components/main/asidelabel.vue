@@ -58,26 +58,25 @@ export default {
   },
   methods: {
     loadData(){
-      let res = {};
-      // axios.get(urls.login,(res)=>{
-        this.$store.commit('setState',{permission:res.permission || []})
-        this.config.permission = res.permission || [];
+      axios.get(urls.login,(res)=>{
+        let permissions = res.data.permissions.split(',')
+        this.$store.commit('setState',{permission:permissions || []})
+        this.config.permission = permissions || [];
         this.initData()
-      // })
+      })
     },
     initData(){
       let banners=[];
       for(let i in config.banner){
         let item = {...config.banner[i]};
         if(item.type == 'group'){
-          item.list = item.list.filter(x=this.config.permission.includes(x.code)|| !config.havePermisiison)
-          if(item.length > 0) banners.push(item)
+          item.list = item.list.filter(x=>this.config.permission.includes(x.code)|| !config.havePermisiison)
+          if(item.list.length > 0) banners.push(item)
         }else{
           if(this.config.permission.includes(item.code) || !config.havePermisiison){
             banners.push(item)
           }
         }
-        console.log(banners)
       }
       this.list = banners;
       let item= this.list[0]

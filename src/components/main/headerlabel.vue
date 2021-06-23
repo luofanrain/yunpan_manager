@@ -1,10 +1,11 @@
 <template>
   <el-container class='header_menu headerlabel'>
     <div class='header_logo_block'>
-      <img
+      <!-- <img
         :src="require('@/assets/images/logo.png')"
         class='header_logo_img'
-        />
+        /> -->
+        云盘系统后台管理平台
     </div>
     <div class='header_logo_space'></div>
     <div class="HeadIcon">
@@ -48,8 +49,10 @@ export default {
   display: flex;
   align-items:center;
   justify-content: left;
-  width:212px;
+  min-width:212px;
   height:100%;
+  font-size:28px;
+  color:#fff;
   
 }
 

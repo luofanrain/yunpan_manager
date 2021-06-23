@@ -1,27 +1,27 @@
 <template>
-  <div class='pageMiddle_detail'>
+  <div class='pageMiddle_detail pageMiddle_detail_accounts'>
       <div class='pageMiddle_main'>
         <div class='pageMiddle_box'>
           <div class='pageMiddle_title'>
-            {{item ? config.label.update:config.label.create}}
+            {{item.id ? '修改密码':'新增'}}
             <i class='el-icon-close close_xxx' @click='closeInfo'></i>
           </div>
           <div class='box_pageMiddle'>
             <div class='box_content'>
-              <div class='pageMiddle_row' >
-                  <div class='pageMiddle_field pageMiddle_field_name'>用户名</div>
+              <div class='pageMiddle_row'>
+                  <div class='pageMiddle_field'>密码</div>
                   <div class='pageMiddle_value'>
-                    <el-input v-model.trim="data.username" placeholder="请输入用户名" ></el-input>
+                    <el-input placeholder="请输入密码" v-model.trim="data.password" type="password" class='inputContent'  autocomplete="new-password" required="required" autocapitalize="off"></el-input>
                   </div>
               </div>
-              <div class='pageMiddle_row' >
-                  <div class='pageMiddle_field pageMiddle_field_name'>密码</div>
+              <div class='pageMiddle_row'>
+                  <div class='pageMiddle_field'>确认密码</div>
                   <div class='pageMiddle_value'>
-                    <el-input v-model.trim="data.password" placeholder="请输入密码"  ></el-input>
+                    <el-input placeholder="请确认密码" v-model.trim="data.surepasswd" type="password" class='inputContent'  autocomplete="new-password" required="required" autocapitalize="off"></el-input>
                   </div>
               </div>
-              <div class='pageMiddle_row pageMiddle_row_group'>
-                  <el-button type="primary" @click="doCommit">{{item ? config.label.update:config.label.create}}</el-button>
+              <div class='pageMiddle_row page_row_btn_single page_row_btn_single_email '>
+                  <el-button type="primary" @click="doCommit">{{item.id ? '修改':'新增'}}</el-button>
               </div>
             </div>
           </div>
@@ -33,6 +33,7 @@
 <script>
 import axios from '@/common/axios'
 import config from '@/common/config'
+import $ from 'jquery'
 import tips from '@/common/tips'
 import urls from '@/common/urls'
 export default {
@@ -41,76 +42,69 @@ export default {
     item:{
       type:Object,
       default:()=>{
-        return null
+        return {}
       }
     }
   },
   data(){
     return {
       data:{
-        username:'',
         password:'',
+        surepasswd:'',
       },
       config:{
-        label:config.table.label
       },
       loading:false,
     }
   },
   
   mounted(){
-    if(this.item) {
-      this.initData()
-      return;
-    }
+    if(this.item.id) this.initData()
   },
   methods:{
     initData(){
-      this.data = {...this.item};
+      this.data.id = this.item.id;
     },
     closeInfo(){
       this.$emit('closeInfo')
     },
-    inputCode(){
-      this.data.count = this.data.count.replace(/\D/g,'').substr(0,8)
-    },
-    verity(){
-      if(this.data.username === ''){
-        tips.error(this,{text:'请输入用户名'});
-        return true;
-      }
+    formatData(){
       if(this.data.password === ''){
         tips.error(this,{text:'请输入密码'});
-        return true;
+        return false;
       }
-      return false;
+      if(this.data.surepasswd !== this.data.password){
+        tips.error(this,{text:'两次密码不一致,请重新输入'});
+        return false;
+      }
+      return true;
     },
     doCommit(){
-      if(this.loading || this.verity()){
+      if(this.loading || !this.formatData()){
         return;
       }
       this.loading = true;
-      if(this.item){
+      if(this.item.id){
         this.update();
       }else{
         this.create();
       }
     },
     update(){
-      let url = urls.users.update;
+      let url = urls.accounts.updatePassword;
       axios.patch(url,this.data,(res)=>{
         setTimeout(() => { this.loading = false; }, 1000);
         if(res.errcode) return;
-        tips.success(this,{text:config.showTips.update})
+        tips.success(this,{text:'修改密码成功'})
         this.$emit('closeInfo',true)
       })
     },
     create(){
-      let url = urls.users.create;
+      let url = urls.accounts.create;
       axios.post(url,this.data,(res)=>{
         setTimeout(() => { this.loading = false; }, 1000);
         if(res.errcode) return;
-        tips.success(this,{text:config.showTips.create})
+        tips.success(this,{text:'新增成功'})
         this.$emit('closeInfo',true)
       })
     },
@@ -118,8 +112,8 @@ export default {
 
 }
 </script>
-<style>
-.pageMiddle_detail .pageMiddle_field_name{
-  /* width:60px; */
+<style scoped>
+.pageMiddle_detail_accounts .pageMiddle_field{
+  min-width:80px;
 }
-</style>
+</style>>

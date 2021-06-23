@@ -43,7 +43,7 @@ router.beforeEach((to,from,next)=>{
     next();
     return;
   }
-  if(loginData.username){
+  if(loginData.account){
     if(!store.state.userInfo){
       getUserInfo(next)
       return;

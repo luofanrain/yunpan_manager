@@ -1,10 +1,9 @@
 <template>
   <div class='page_menu_list'>
     <div class='func_tab'>
-      <el-input v-model="search.name" placeholder="请输入关键字"></el-input>
-      <el-button type="primary" @click='loadData'>{{config.label.select}}</el-button>
-      <el-button type="primary" @click='create'>{{config.label.create}}</el-button>
-      <input type='file' v-if='resetFile' v-show='false' @change='changeFile'>
+      <el-input v-model="search.name" placeholder="请输入权限名"></el-input>
+      <el-button type="primary" @click='loadData'>查询</el-button>
+      <el-button type="primary" @click='create'>新增</el-button>
     </div>
     <div class='tableData' ref='list' :style='`height:${height-100}px`'>
       <el-table
@@ -16,7 +15,7 @@
         style="width: 100%;height:100%;overflow:auto;"  class='showData'>    
         <el-table-column
           type="index"
-          :index="(search.page-1)*search.pagesize+1"
+          :index="(page-1)*20+1"
           width="100"
            label="序号">
         </el-table-column>
@@ -29,13 +28,11 @@
         <el-table-column
           label="操作"
           align="right"
-          width="200"
           >
           <template slot-scope="scope">
               <el-button-group>
-                <el-button type="primary"   @click='update(list[scope.$index])'>{{config.label.modify}}</el-button>                
-                <el-button type="danger"  @click='del(list[scope.$index])'>{{config.label.delete}}</el-button>
-
+                <el-button type="primary" size='mini'  @click='update(list[scope.$index])'>{{config.label.modify}}</el-button>
+                <el-button type="primary" size='mini'  @click='del(list[scope.$index].id)'>{{config.label.delete}}</el-button>
               </el-button-group>
           </template>
         </el-table-column>
@@ -45,8 +42,8 @@
       <el-pagination
         layout="prev, pager, next"
         @current-change='goPage'
-        :page-size='search.pagesize'
-        :current-page='search.page'
+        :page-size='20'
+        :current-page='page'
         :total="total_page">
         
       </el-pagination>
@@ -62,41 +59,40 @@
   import urls from '@/common/urls'
   import tool from '@/common/tool'
   import tips from '@/common/tips'
-  import detail from '@/components/menu/users/detail'
-  import middle from '@/components/menu/users/middle'
+  import detail from '@/components/menu/permissions/detail'
+  import middle from '@/components/menu/permissions/middle'
   import BSscroll from 'better-scroll'
   import $ from 'jquery'
   export default {
-    name:'users',
+    name:'permissions',
     data() {
       return {
         config:{
-          label:config.table.label,
           imgfields:[],
           filedsWidth:{
-            
-          }
+          },
+          label:config.table.label,
+          permissions:config.types.permissions
         },
         search:{
-          name:'',
-          page:config.table.page,
-          pagesize:config.table.pagesize,
+          name:''
         },
+        showtime:'',
+        page:config.table.page,
+        pagesize:config.table.pagesize,
         total_page:1,
-        watchDetail:false,
         list: [],
         scroll:undefined,
         loading:false,
-        resetFile:true,
-        deleteLoading:false,
         fields:{},
         item:{},
         tab:'',
+        watchDetail:false,
         height:0
       }
     },
     created(){
-      this.fields = config.table.users;
+      this.fields = config.table.permissions;
       this.loadData();
       // 根据当前界面宽高显示不同的字段
     },
@@ -109,13 +105,13 @@
     },
     methods:{
       loadData(){
-        let url = tool.getURL(urls.users.list,this.search)
+        let url = tool.getURL(urls.permissions.list,this.search)
          axios.get(url,(res)=>{
-          this.list = res.data;
-          this.total_page = res.count || 1;
-          this.$nextTick(()=>{
-            // this.initScroll();
-          })
+            this.list = res.data;
+            this.total_page = res.count || 1;
+            this.$nextTick(()=>{
+              // this.initScroll();
+            })
          })
       },
       initScroll(){
@@ -133,28 +129,21 @@
       formatData(key,data){
         let text = '';
         switch(key){
+          case 'type':
+            text = this.config.permissions[data[key]]
+            break;
         }
         return text ? text : tool.fotmatData(key,data[key])
       },
       goPage(page){
-        this.search.page = page;
+        this.page = page;
         sessionStorage.setItem('page',page)
         this.loadData();
       },
       select(data,tableData,cell){
       },
-      uploadFile(){
-        this.$refs.file.click()
-      },
-      async changeFile(e){
-        let file = e.target.files[0];
-        this.resetFile = false;
-        let data = await uploads.uploadFile(file,'xlsx|xls','file',urls.users.import);
-        tips.success(this,{text:config.showTips.import})
-        this.resetFile = true;
-      },
       exportFile(){
-        axios.download(urls.users.export,this.getName(),'xlsx')
+        axios.download(urls.permissions.export,this.getName(),'xlsx')
       },
       getName(){
         let date = new Date();
@@ -182,32 +171,25 @@
         this.tab = 'middle'
       },
       create(){
-        this.item = null
+        this.item = {}
         this.tab = 'middle'
       },
-      del(item){
+      del(id){
           this.$confirm('此操作将永久删除此信息, 是否继续?', '警告', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'error'
           }).then(() => {
-            this.requestDel(item);
+            this.requestDel(id);
           }).catch((res) => {
           });
       },
-      requestDel(item){
-        if(this.deleteLoading) return;
-        this.deleteLoading = true;
-        let url = `${urls.users.delete}?id=${item.id}`;
+      requestDel(id){
+        let url = `${urls.permissions.delete}?id=${id}`;
         axios.delete(url,(res)=>{
-          console.log(res)
-          setTimeout(()=>{this.deleteLoading = false},1000)
           if(res.errcode) return;
-          if(this.total_page%this.search.pagesize == 1 && this.search.page > 1){
-            this.search.page -=1;
-          }
           this.loadData();
-          tips.success(this,{text:config.showTips.delete})
+          tips.success(this,{text:`删除成功`})
         })
       },
       

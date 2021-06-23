@@ -5,25 +5,26 @@ const urls = {
         uploadFile:'/public/uploadFile',
         uploadBase64:'/public/uploadBase64'
     },
-    collect:{
-        list:'/api/collect',
-        create:'/api/collect',
-        update:'/api/collect',
-        delete:'/api/collect',
+    accounts:{
+        list:'/api/admin',
+        create:'/api/admin',
+        update:'/api/admin',
+        delete:'/api/admin',
+        updatePermission:'/api/adminPermission',
+        updatePassword:'/api/adminPassword'
     },
-    users:{
-        list:'/api/users',
-        create:'/api/users',
-        update:'/api/users',
-        delete:'/api/users'
+    permissions:{
+        list:'/api/permission',
+        create:'/api/permission',
+        update:'/api/permission',
+        delete:'/api/permission',
     },
-    collectType:{
-        list:'/api/collectType',
-        create:'/api/collectType',
-        update:'/api/collectType',
-        delete:'/api/collectType',
-        import:'/api/collectImport'
-    },
+    messages:{
+        list:'/api/messages',
+        create:'/api/messages',
+        update:'/api/messages',
+        delete:'/api/messages',
+    }
 }
 for(let key in urls){
     if(typeof urls[key] == "object"){
