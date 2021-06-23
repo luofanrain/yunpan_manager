@@ -24,6 +24,18 @@ const urls = {
         create:'/api/messages',
         update:'/api/messages',
         delete:'/api/messages',
+    },
+    userlist:{
+        list:'/api/users',
+        create:'/api/users',
+        update:'/api/users',
+        delete:'/api/users',
+    },
+    doitlogs:{
+        list:'/api//doItLog',
+    },
+    loginlogs:{
+        list:'/api/loginLog',
     }
 }
 for(let key in urls){

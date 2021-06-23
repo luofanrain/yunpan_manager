@@ -22,6 +22,9 @@ import asidelabel from '@/components/main/asidelabel'
 import accounts from '@/components/menu/accounts/accounts'
 import permissions from '@/components/menu/permissions/permissions'
 import messages from '@/components/menu/messages/messages'
+import userlist from '@/components/menu/userlist/userlist'
+import doitlogs from '@/components/menu/doitlogs/doitlogs'
+import loginlogs from '@/components/menu/loginlogs/loginlogs'
 export default  {
     name:'index',
     data(){
@@ -41,6 +44,9 @@ export default  {
         accounts,
         permissions,
         messages,
+        userlist,
+        doitlogs,
+        loginlogs
     }
 }
 

@@ -7,7 +7,7 @@
  * @FilePath: \group\template\template-admin\src\common\config.js
  */
  const config = {
-  host:'http://127.0.0.1:8000',
+  host:'http://yunpan-admin.luofanrain.club',
   havePermisiison:true,
   axiosType:{
     zip:'application/zip',
@@ -20,7 +20,9 @@
     import:'导入成功'
   },
   types:{
-    permissions:['菜单','功能']
+    permissions:['菜单','功能'],
+    select:['否','是'],
+    gender:["男","女"]
   },
   tips:{
     errCode:{
@@ -72,6 +74,27 @@
       level:[1],
       code:'MESSAGES'
     },
+    {
+      key:'userlist',
+      type:'row',
+      label:'用户列表',
+      level:[1],
+      code:'USERLIST'
+    },
+    {
+      key:'doitlogs',
+      type:'row',
+      label:'操作日志',
+      level:[1],
+      code:'DOITLOGS'
+    },
+    {
+      key:'loginlogs',
+      type:'row',
+      label:'登录日志',
+      level:[1],
+      code:'LOGINLOGS'
+    },
 
   ],
   table:{
@@ -109,7 +132,30 @@
       from_name:'留言人',
       content:'留言内容',
       create_time:'创建时间'
-
+    },
+    userlist:{
+      Nickname: "昵称",
+      Password: "密码",
+      Email: "邮箱",
+      // Headimg: "头像",
+      name: "姓名",
+      birthday: "出生日期",
+      hospital: "学校",
+      gender: "性别",
+      disabled:"是否禁用"
+    },
+    doitlogs:{
+      name: "姓名",
+      account: "账号",
+      module: "模块",
+      operating: "操作",
+      content: "描述",
+      create_time: "操作时间"
+    },
+    loginlogs:{
+      name: "姓名",
+      account: "账号",
+      create_time: "操作时间"
     }
   }
 }
