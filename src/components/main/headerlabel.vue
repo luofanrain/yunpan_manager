@@ -13,7 +13,7 @@
         :src='url'
         fit="cover"></el-image>
         
-      <el-link type="warning" disabled>{{data.username || `游客${Math.floor(Math.random()*9000000 + 1000000)}`}}</el-link>
+      <el-link type="warning" disabled>{{data.account || `游客${Math.floor(Math.random()*9000000 + 1000000)}`}}</el-link>
         
     </div>
   </el-container>

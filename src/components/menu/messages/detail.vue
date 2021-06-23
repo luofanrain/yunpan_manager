@@ -93,10 +93,10 @@ export default {
     },
     loadChat() {
       let url = tool.getURL(urls.messages.list, {
-        root_id: this.item.root_id,
+        root_id: this.item.id,
       });
       axios.get(url, (res) => {
-        this.chatList = res.data;
+        this.chatList = [this.item,...res.data];
         this.$nextTick(() => {
           this.$refs.chatlist.scrollTop = this.$refs.chatlist.scrollHeight;
         });
@@ -123,7 +123,7 @@ export default {
       }
       axios.post(urls.messages.create, this.replyItem, (res) => {
         this.loadChat()
-        this.replyItem.text = "";
+        this.replyItem.content = "";
         this.$nextTick(() => {
           this.$refs.chatlist.scrollTop = this.$refs.chatlist.scrollHeight;
         });
