@@ -3,7 +3,7 @@
     <div class="pageMiddle_main">
       <div class="pageMiddle_box">
         <div class="pageMiddle_title">
-          {{ item ? config.label.update : config.label.create }}
+          {{ item.id ? config.label.update : config.label.create }}
           <i class="el-icon-close close_xxx" @click="closeInfo"></i>
         </div>
         <div class="box_pageMiddle">
@@ -13,7 +13,7 @@
               <div class="pageMiddle_value">
                 <el-input
                   v-model.trim="data.Nickname"
-                  placeholder="请输入名字"
+                  placeholder="请输入昵称"
                 ></el-input>
               </div>
             </div>
@@ -22,8 +22,7 @@
               <div class="pageMiddle_value">
                 <el-input
                   v-model.trim="data.Password"
-                  placeholder="请输入数量"
-                  @input="inputCode"
+                  placeholder="请输入密码"
                 ></el-input>
               </div>
             </div>
@@ -32,8 +31,7 @@
               <div class="pageMiddle_value">
                 <el-input
                   v-model.trim="data.Email"
-                  placeholder="请输入数量"
-                  @input="inputCode"
+                  placeholder="请输入邮箱"
                 ></el-input>
               </div>
             </div>
@@ -42,19 +40,19 @@
               <div class="pageMiddle_value">
                 <el-input
                   v-model.trim="data.name"
-                  placeholder="请输入数量"
-                  @input="inputCode"
+                  placeholder="请输入姓名"
                 ></el-input>
               </div>
             </div>
             <div class="pageMiddle_row">
-              <div class="pageMiddle_field pageMiddle_field_name">出生日期</div>
+              <div class="pageMiddle_field pageMiddle_field_name">生日</div>
               <div class="pageMiddle_value">
                 <div class="block">
                   <el-date-picker
                     v-model="data.birthday"
+                    value-format='yyyy-MM-dd'
                     type="date"
-                    placeholder="选择日期">
+                    placeholder="选择生日">
                   </el-date-picker>
                 </div>
               </div>
@@ -64,15 +62,14 @@
               <div class="pageMiddle_value">
                 <el-input
                   v-model.trim="data.hospital"
-                  placeholder="请输入数量"
-                  @input="inputCode"
+                  placeholder="请输入学校"
                 ></el-input>
               </div>
             </div>
             <div class="pageMiddle_row">
               <div class="pageMiddle_field pageMiddle_field_name">性别</div>
               <div class="pageMiddle_value">
-                <el-select v-model="value" placeholder="请选择">
+                <el-select v-model="data.gender" placeholder="请选择">
                   <el-option label="男" value="0"> </el-option>
                   <el-option label="女" value="1"> </el-option>
                 </el-select>
@@ -80,7 +77,7 @@
             </div>
             <div class="pageMiddle_row pageMiddle_row_group">
               <el-button type="primary" @click="doCommit">{{
-                item ? config.label.update : config.label.create
+                 item.id ? config.label.update : config.label.create
               }}</el-button>
             </div>
           </div>
@@ -127,7 +124,7 @@ export default {
   },
 
   mounted() {
-    if (this.item) {
+    if (this.item.id) {
       this.initData();
       return;
     }
@@ -144,7 +141,7 @@ export default {
     },
     formatData() {
       if (this.data.name === "") {
-        tips.error({ text: "请输入能量名" });
+        tips.error(this,{ text: "请输入用户名" });
         return false;
       }
       return true;
@@ -154,32 +151,34 @@ export default {
         return;
       }
       this.loading = true;
-      if (this.item) {
+      console.log(1111111111111111111111111111)
+      console.log(this.item)
+      if (this.item.id) {
         this.update();
       } else {
         this.create();
       }
     },
     update() {
-      let url = urls.consult.update;
+      let url = urls.userlist.update;
       axios.patch(url, this.data, (res) => {
         setTimeout(() => {
           this.loading = false;
         }, 1000);
         if (res.errcode) return;
-        tips.success({ text: config.showTips.update });
+        tips.success(this,{ text: config.showTips.update });
         this.loading = true;
         this.$emit("closeInfo", true);
       });
     },
     create() {
-      let url = urls.consult.create;
+      let url = urls.userlist.create;
       axios.post(url, this.data, (res) => {
         setTimeout(() => {
           this.loading = false;
         }, 1000);
         if (res.errcode) return;
-        tips.success({ text: config.showTips.create });
+        tips.success(this,{ text: config.showTips.create });
         this.loading = true;
         this.$emit("closeInfo", true);
       });

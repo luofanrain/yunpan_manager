@@ -15,7 +15,7 @@
         style="width: 100%;height:100%;overflow:auto;"  class='showData'>    
         <el-table-column
           type="index"
-          :index="(page-1)*20+1"
+          :index="(search.page-1)*search.pagesize+1"
           width="100"
            label="序号">
         </el-table-column>
@@ -32,7 +32,7 @@
           >
           <template slot-scope="scope">
               <el-button-group>
-                <el-button type="primary" size='mini'  @click='update(list[scope.$index])'>{{config.doDisabled[list[scope.$index].disabled]}}</el-button>
+                <el-button type="primary" size='mini'  @click='updateStatus(list[scope.$index])'>{{config.doDisabled[getIndex(list[scope.$index].disabled)]}}</el-button>
                 <el-button type="primary" size='mini'  @click='update(list[scope.$index])'>{{config.label.modify}}</el-button>
                 <el-button type="primary" size='mini'  @click='del(list[scope.$index].id)'>{{config.label.delete}}</el-button>
               </el-button-group>
@@ -44,8 +44,8 @@
       <el-pagination
         layout="prev, pager, next"
         @current-change='goPage'
-        :page-size='20'
-        :current-page='page'
+        :page-size='search.pagesize'
+        :current-page='search.page'
         :total="total_page">
       </el-pagination>
     </div>
@@ -75,14 +75,14 @@
           label:config.table.label,
           gender:config.types.gender,
           disabled:config.types.select,
-          doDisabled:["禁用","不禁用"]
+          doDisabled:["启用","禁用"]
         },
         search:{
-          name:''
+          name:'',
+          page:config.table.page,
+          pagesize:config.table.pagesize,
         },
         showtime:'',
-        page:config.table.page,
-        pagesize:config.table.pagesize,
         total_page:1,
         list: [],
         scroll:undefined,
@@ -117,6 +117,9 @@
             })
          })
       },
+      getIndex(index){
+        return index == 0 ? 1 : 0;
+      },
       initScroll(){
         this.$nextTick(()=>{
           if(!this.scroll){
@@ -142,7 +145,7 @@
         return text ? text : tool.fotmatData(key,data[key])
       },
       goPage(page){
-        this.page = page;
+        this.search.page = page;
         sessionStorage.setItem('page',page)
         this.loadData();
       },
@@ -166,6 +169,18 @@
       showInfo(data){
         this.item = data;
         this.tab = 'detail';
+      },
+      updateStatus(item){
+        let data = {
+          id:item.id,
+          status: this.getIndex(item.disabled)
+        }
+        axios.patch(urls.userlist.disabled,data,(res)=>{
+          if(res.errcode) return;
+          let text = this.config.doDisabled[data.status]
+          this.loadData();
+          tips.success(this,{text:`${text}成功`})
+        })
       },
       update(data){
         this.item = data;

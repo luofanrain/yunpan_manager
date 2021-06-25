@@ -8,6 +8,7 @@
  */
  const config = {
   host:'http://yunpan-admin.luofanrain.club',
+  // host:'http://192.168.110.121:4000',
   havePermisiison:true,
   axiosType:{
     zip:'application/zip',

@@ -15,7 +15,7 @@
         style="width: 100%;height:100%;overflow:auto;"  class='showData'>    
         <el-table-column
           type="index"
-          :index="(page-1)*20+1"
+          :index="(search.page-1)*search.pagesize+1"
           width="100"
            label="序号">
         </el-table-column>
@@ -42,8 +42,8 @@
       <el-pagination
         layout="prev, pager, next"
         @current-change='goPage'
-        :page-size='20'
-        :current-page='page'
+        :page-size='search.pagesize'
+        :current-page='search.page'
         :total="total_page">
         
       </el-pagination>
@@ -75,11 +75,11 @@
           loginlogs:config.types.select
         },
         search:{
-          name:''
-        },
-        showtime:'',
+          name:'',
         page:config.table.page,
         pagesize:config.table.pagesize,
+        },
+        showtime:'',
         total_page:1,
         list: [],
         scroll:undefined,
@@ -136,7 +136,7 @@
         return text ? text : tool.fotmatData(key,data[key])
       },
       goPage(page){
-        this.page = page;
+        this.search.page = page;
         sessionStorage.setItem('page',page)
         this.loadData();
       },

@@ -30,9 +30,10 @@ const urls = {
         create:'/api/users',
         update:'/api/users',
         delete:'/api/users',
+        disabled:"/api/usersDisabled"
     },
     doitlogs:{
-        list:'/api//doItLog',
+        list:'/api/doItLog',
     },
     loginlogs:{
         list:'/api/loginLog',
